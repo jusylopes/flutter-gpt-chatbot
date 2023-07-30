@@ -1,15 +1,15 @@
-class OpenApiModel {
+class OpenaiModel {
   final String id;
   final int created;
   final String root;
 
-  OpenApiModel({
+  OpenaiModel({
     required this.id,
     required this.created,
     required this.root,
   });
 
-  factory OpenApiModel.fromJson(Map<String, dynamic> json) => OpenApiModel(
+  factory OpenaiModel.fromJson(Map<String, dynamic> json) => OpenaiModel(
         id: json["id"],
         created: json["created"],
         root: json["root"],
