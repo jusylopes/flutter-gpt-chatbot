@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: Constants.appName,
       theme: ThemeData(
-        scaffoldBackgroundColor: GptColors.scaffoldBackgroundColor,
-        appBarTheme: const AppBarTheme(color: GptColors.cardColor),
+        scaffoldBackgroundColor: GptColors.backgroundColor,
+        appBarTheme: const AppBarTheme(color: GptColors.primaryColor),
         useMaterial3: true,
       ),
       home: const ChatScreen(),

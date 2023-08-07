@@ -1,11 +1,8 @@
+enum ChatMessageType { user, bot }
+
 class ChatModel {
-  final String msg;
-  final int chatIndex;
+  final String message;
+  final ChatMessageType chatMessageType;
 
-  ChatModel({required this.msg, required this.chatIndex});
-
-  factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
-        msg: json["msg"],
-        chatIndex: json["chatIndex"],
-      );
+  ChatModel({required this.message, required this.chatMessageType});
 }
