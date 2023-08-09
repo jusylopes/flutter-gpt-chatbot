@@ -19,6 +19,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late FocusNode _focusNode;
   final _repository = ChatRepository(dio: Dio());
   final _messages = <ChatModel>[];
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -52,6 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
     setState(() {
+      _isLoading = true;
       _messages.add(ChatModel(
         message: userMessage,
         chatMessageType: ChatMessageType.user,
@@ -63,6 +65,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final botResponse = await _getResponseBot(userMessage);
 
     setState(() {
+      _isLoading = false;
       _messages.add(ChatModel(
         message: botResponse,
         chatMessageType: ChatMessageType.bot,
@@ -130,28 +133,37 @@ class _ChatScreenState extends State<ChatScreen> {
                       controller: _textEditingController,
                       style: const TextStyle(color: Colors.white, fontSize: 18),
                       decoration: InputDecoration(
-                          hintText: 'Send a message',
-                          hintStyle: const TextStyle(color: Colors.grey),
-                          fillColor: GptColors.primaryColor,
-                          filled: true,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: GptColors.primaryColor,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
+                        hintText: 'Send a message',
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        fillColor: GptColors.primaryColor,
+                        filled: true,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: GptColors.primaryColor,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: GptColors.primaryColor,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: GptColors.primaryColor,
                           ),
-                          suffixIcon: IconButton(
-                              onPressed: _sendMessageUser,
-                              icon: const Icon(
-                                Icons.send_rounded,
-                                color: Colors.grey,
-                              ))),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: IconButton(
+                            onPressed: _sendMessageUser,
+                            icon: _isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.grey,
+                                  )
+                                : const Icon(
+                                    Icons.send_rounded,
+                                    color: Colors.grey,
+                                  ),
+                          ),
+                        ),
+                      ),
                       maxLines: 4,
                       minLines: 1,
                     ),
