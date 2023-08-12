@@ -1,10 +1,9 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gpt_chatbot/models/chat_model.dart';
-import 'package:flutter_gpt_chatbot/repositories/chat_repository.dart';
+import 'package:flutter_gpt_chatbot/providers/chat_provider.dart';
 import 'package:flutter_gpt_chatbot/screens/widgets/chat_widget.dart';
 import 'package:flutter_gpt_chatbot/utils/assets_manager.dart';
 import 'package:flutter_gpt_chatbot/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -17,8 +16,6 @@ class _ChatScreenState extends State<ChatScreen> {
   late TextEditingController _textEditingController;
   late ScrollController _scrollController;
   late FocusNode _focusNode;
-  final _repository = ChatRepository(dio: Dio());
-  final _messages = <ChatModel>[];
   bool _isLoading = false;
 
   @override
@@ -44,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void _sendMessageUser() async {
+  _sendMessage() async {
     final userMessage = _textEditingController.text;
 
     if (userMessage.isEmpty) {
@@ -52,30 +49,15 @@ class _ChatScreenState extends State<ChatScreen> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-      _messages.add(ChatModel(
-        message: userMessage,
-        chatMessageType: ChatMessageType.user,
-      ));
-      _textEditingController.text = '';
-      _scrollToEnd();
-    });
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+    _isLoading = true;
+    chatProvider.addUserMsg(message: userMessage);
+    _textEditingController.clear();
+    _focusNode.unfocus();
+    await chatProvider.addBotMessage(message: userMessage);
 
-    final botResponse = await _getResponseBot(userMessage);
-
-    setState(() {
-      _isLoading = false;
-      _messages.add(ChatModel(
-        message: botResponse,
-        chatMessageType: ChatMessageType.bot,
-      ));
-      _scrollToEnd();
-    });
-  }
-
-  Future<String> _getResponseBot(String message) async {
-    return await _repository.getMessageFromChatGPT(message: message);
+    _scrollToEnd();
+    _isLoading = false;
   }
 
   void _showEmptyMessageSnackBar(BuildContext context) {
@@ -90,6 +72,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final chatProvider = Provider.of<ChatProvider>(context);
+
     return GestureDetector(
       onTap: () {
         _focusNode.unfocus();
@@ -120,9 +104,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   Flexible(
                     child: ListView.builder(
                       controller: _scrollController,
-                      itemCount: _messages.length,
+                      itemCount: chatProvider.chatMessages.length,
                       itemBuilder: (_, index) {
-                        return ChatWidget(message: _messages[index]);
+                        return ChatWidget(
+                            message: chatProvider.chatMessages[index]);
                       },
                     ),
                   ),
@@ -152,7 +137,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         suffixIcon: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: IconButton(
-                            onPressed: _sendMessageUser,
+                            onPressed: _sendMessage,
                             icon: _isLoading
                                 ? const CircularProgressIndicator(
                                     color: Colors.grey,
