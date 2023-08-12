@@ -14,10 +14,10 @@ class ChatRepository {
     try {
       Response response = await _dio.post('$_openaiBaseUrl/completions',
           data: {
-            "model": "text-davinci-003",
-            "prompt": "Say this is a test",
-            "max_tokens": 7,
-            "temperature": 0
+            'model': 'text-davinci-003',
+            'prompt': message,
+            'max_tokens': 7,
+            'temperature': 0
           },
           options: Options(
             headers: {
@@ -26,9 +26,7 @@ class ChatRepository {
             },
           ));
 
-      return (response.data['choices'][0]['text'] as String)
-          .replaceFirst("\n", "")
-          .replaceFirst("\n", "");
+      return (response.data['choices'][0]['text'] as String);
     } catch (error) {
       throw Exception('Failed to load text: $error');
     }
