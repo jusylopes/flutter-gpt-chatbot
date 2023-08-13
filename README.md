@@ -2,7 +2,7 @@
 ## Sobre o projeto
 
 O Aplicativo consome a API [OpenAI
-](https://platform.openai.com/docs/api-reference).
+](https://platform.openai.com/docs/api-reference)
 
 
 ### Tecnologias utilizadas
