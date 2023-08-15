@@ -104,10 +104,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   Flexible(
                     child: ListView.builder(
                       controller: _scrollController,
-                      itemCount: chatProvider.chatMessages.length,
+                      itemCount: chatProvider.getChatMessages.length,
                       itemBuilder: (_, index) {
                         return ChatWidget(
-                            message: chatProvider.chatMessages[index]);
+                            message: chatProvider.getChatMessages[index]);
                       },
                     ),
                   ),

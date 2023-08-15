@@ -17,12 +17,11 @@ class ChatRepository {
             'model': 'text-davinci-003',
             'prompt': message,
             'max_tokens': 7,
-            'temperature': 0
           },
           options: Options(
             headers: {
-              'Authorization': 'Bearer $apiToken',
               'Content-Type': 'application/json',
+              'Authorization': 'Bearer $apiToken',
             },
           ));
 

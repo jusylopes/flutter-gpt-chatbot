@@ -8,7 +8,7 @@ class ChatProvider with ChangeNotifier {
   ChatProvider({required ChatRepository repository}) : _repository = repository;
 
   final List<ChatModel> _chatMessages = [];
-  List<ChatModel> get chatMessages => _chatMessages;
+  List<ChatModel> get getChatMessages => _chatMessages;
 
   void addUserMsg({required String message}) {
     _chatMessages.add(
